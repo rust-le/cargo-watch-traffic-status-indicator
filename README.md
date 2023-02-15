@@ -1,2 +1,4 @@
-# cargo-check-traffic-status-indicator
-HID device showing current cargo check status
+# cargo-watch-traffic-status-indicator
+HID device showing current cargo watch status
+
+usage: cargo watch | ./tsi
