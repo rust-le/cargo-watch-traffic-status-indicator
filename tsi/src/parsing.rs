@@ -1,4 +1,10 @@
+use regex::Regex;
 use std::error::Error;
+struct Color {
+    red: bool,
+    green: bool,
+    yellow: bool,
+}
 pub fn parse_text(text: &str) -> Result<usize, Box<dyn Error>> {
     Ok(text.len())
 }
