@@ -5,9 +5,9 @@ fn main() {
     let mut text: String = String::new();
     while io::stdin().read_line(&mut text).is_ok() {
         let trimmed = text.trim_end();
-        let value: usize = parsing::parse_text(&trimmed).unwrap();
+        let value: parsing::Color = parsing::parse_text(&trimmed).unwrap();
         println!("Parsed text: {}", trimmed);
-        println!("{}", value);
+        println!("{:?}", value);
         text.clear();
     }
 }

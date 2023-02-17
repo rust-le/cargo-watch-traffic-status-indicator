@@ -1,24 +1,32 @@
 use regex::Regex;
 use std::error::Error;
-struct Color {
-    red: bool,
-    green: bool,
-    yellow: bool,
+#[derive(Debug,PartialEq)]
+pub struct Color {
+    pub red: bool,
+    pub green: bool,
+    pub yellow: bool,
 }
-pub fn parse_text(text: &str) -> Result<usize, Box<dyn Error>> {
-    Ok(text.len())
+pub fn parse_text(text: &str) -> Result<Color, Box<dyn Error>> {
+    unimplemented!()
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
     #[test]
-    fn test_parse_text() {
+    fn test_green_messages() {
         // arrange
-        let some_text: &str = "one two";
+        let messages = ["[Finished running. Exit status: 0]"];
+        let should_be_green: Color = Color {
+            red: false,
+            green: true,
+            yellow: false,
+        };
         // act
         // assert
-        assert!(parse_text(&some_text).is_ok());
-        assert_eq!(parse_text(&some_text).unwrap(), 7);
+        messages.into_iter().for_each(|message| {
+            assert!(parse_text(message).is_ok());
+            assert_eq!(parse_text(message).unwrap(), should_be_green);
+        });
     }
 }
