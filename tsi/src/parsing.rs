@@ -16,13 +16,21 @@ impl Color {
     }
 }
 pub fn parse_text(text: &str) -> Result<Option<Color>, Box<dyn Error>> {
-    let re = Regex::new(r"^\[(Running|Finished running).+]$").unwrap();
-    if re.is_match(text) {
-        let c = match text {
-            "[Finished running. Exit status: 0]" => Some(Color::new()),
-            _ => Some(Color::new()),
-        };
-        Ok(c)
+    let blank: Color = Color::new();
+    let yellow = Regex::new(r"^\[Running.+]$").unwrap();
+    let red = Regex::new(r"^\[Finished running. Exit status: \d+]$").unwrap();
+    if yellow.is_match(text) {
+        Ok(Some(Color {
+            yellow: true,
+            ..blank
+        }))
+    } else if text == "[Finished running. Exit status: 0]" {
+        Ok(Some(Color {
+            green: true,
+            ..blank
+        }))
+    } else if red.is_match(text) {
+        Ok(Some(Color { red: true, ..blank }))
     } else {
         Ok(None)
     }
