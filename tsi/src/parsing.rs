@@ -15,10 +15,26 @@ impl Color {
         }
     }
 }
+impl From<Color> for usize {
+    fn from(color: Color) -> Self {
+        //  red = 1, yellow = 2, green = 4
+        let mut sum = 0;
+        if color.red {
+            sum += 1
+        };
+        if color.yellow {
+            sum += 2
+        };
+        if color.green {
+            sum += 4
+        };
+        sum
+    }
+}
 pub fn parse_text(text: &str) -> Result<Option<Color>, Box<dyn Error>> {
     let blank: Color = Color::new();
-    let yellow = Regex::new(r"^\[Running.+]$").unwrap();
-    let red = Regex::new(r"^\[Finished running. Exit status: \d+]$").unwrap();
+    let yellow = Regex::new(r"^\[Running.+\]$")?;
+    let red = Regex::new(r"^\[Finished running. Exit status: \d{1,3}\]$")?;
     if yellow.is_match(text) {
         Ok(Some(Color {
             yellow: true,
@@ -40,6 +56,20 @@ pub fn parse_text(text: &str) -> Result<Option<Color>, Box<dyn Error>> {
 mod test {
     use super::*;
     #[test]
+    fn test_impl_from_color_for_usize() {
+        // arrange
+        let blank: Color = Color::new();
+        let rainbow: Color = Color {
+            red: true,
+            green: true,
+            yellow: true,
+        };
+        // act
+        // assert
+        assert_eq!(usize::from(blank), 0);
+        assert_eq!(usize::from(rainbow), 7);
+    }
+    #[test]
     fn test_parse_text() {
         // arrange
         let blank: Color = Color::new();
@@ -53,17 +83,17 @@ mod test {
             ..blank
         };
         let messages = vec![
-            ("[Finished running. Exit status: 0]", &green),
-            ("[Running 'cargo check']", &yellow),
-            ("[Finished running. Exit status: 101]", &red),
-            ("[Running 'cargo test && cargo build']", &yellow),
+            ("[Finished running. Exit status: 0]", Some(green)),
+            ("[Finished running. Exit status: 101]", Some(red)),
+            ("[Running 'cargo test && cargo build']", Some(yellow)),
+            ("[Some text]", None),
         ];
         // act
         messages.into_iter().for_each(|(message, color)| {
             // assert
             assert!(parse_text(message).is_ok());
-            if let Ok(Some(c)) = parse_text(message) {
-                assert_eq!(&c, color);
+            if let Ok(c) = parse_text(message) {
+                assert_eq!(c, color);
             }
         });
     }
