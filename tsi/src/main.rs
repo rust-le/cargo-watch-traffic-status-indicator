@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     while io::stdin().read_line(&mut text).is_ok() {
         let trimmed = text.trim_end();
         if let Ok(Some(value)) = parse_text(trimmed) {
-            println!("{:?}", value);
+            println!("{:#?}", value);
             let number: usize = usize::from(value);
             println!("{}", number);
             port.write(number.to_string().as_bytes())?;
